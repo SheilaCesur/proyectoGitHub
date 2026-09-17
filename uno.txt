@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 Primera linea
+=======
+Primera línea
+Segunda línea
+>>>>>>> RamaDos
