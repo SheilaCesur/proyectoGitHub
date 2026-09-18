@@ -1,6 +1,5 @@
-<<<<<<< HEAD
+
 Primera linea
-=======
 Primera línea
 Segunda línea
->>>>>>> RamaDos
+PRUEBA feature-mi-feature
