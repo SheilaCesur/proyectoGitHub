@@ -41,8 +41,9 @@ jobs:
 
     steps:
       - name: Validar DEV_TOKEN
+        shell: bash
         run: |
-          if [ "$DEV_TOKEN" = "${{ secrets.DEV_TOKEN }}" ]; then
+          if [ "$LOCAL_DEV_TOKEN" = "${{ secrets.DEV_TOKEN }}" ]; then
             echo "DEV_TOKEN válido"
           else
             echo "DEV_TOKEN no coincide"
