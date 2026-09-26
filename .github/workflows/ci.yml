@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [develop]
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Añadir línea de la feature al README
+        run: |
+          echo "Añadida feature: ${{ github.head_ref || github.ref_name }}" >> README.md
+
+      - name: Commit y push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "ci: registra nueva feature en README [skip ci]" || echo "Sin cambios que commitear"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+
+  validate-dev:
+    needs: update-readme
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validar DEV_TOKEN contra LOCAL_DEV_TOKEN
+        env:
+          DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
+        run: |
+          if [ "$DEV_TOKEN" != "$LOCAL_DEV_TOKEN" ]; then
+            echo "DEV_TOKEN no coincide con LOCAL_DEV_TOKEN"
+            exit 1
+          fi
+          echo "Token correcto"
